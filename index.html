@@ -353,7 +353,7 @@
 </div>
 
  <script>
-  // 이미지 클릭 시 확대 보기 (모든 팀 이미지 + 공연 순서 이미지)
+  // 이미지 클릭 시 확대 보기 (팀 이미지 + 공연 순서 이미지)
   document.querySelectorAll('.thumb img, .clickable-img').forEach(img => {
     img.addEventListener('click', () => {
       const lightbox = document.getElementById('lightbox');
@@ -364,18 +364,23 @@
     });
   });
 
-  // 모달 클릭 시 닫기
-  document.getElementById('lightbox').addEventListener('click', (e) => {
-    if (e.target.id === 'lightbox') {
-      e.currentTarget.classList.remove('active');
-    }
+  const lightbox = document.getElementById('lightbox');
+  const modalImg = lightbox.querySelector('img');
+
+  // ✅ 배경을 클릭해도 닫기
+  lightbox.addEventListener('click', () => {
+    lightbox.classList.remove('active');
   });
 
-  // ESC 키로 닫기 (선택)
+  // ✅ 이미지를 클릭해도 닫기
+  modalImg.addEventListener('click', (e) => {
+    e.stopPropagation();            // 이미지 클릭 이벤트가 배경까지 전파되지 않도록 (선택)
+    lightbox.classList.remove('active');
+  });
+
+  // ESC 키로 닫기 (옵션)
   window.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape') {
-      document.getElementById('lightbox').classList.remove('active');
-    }
+    if (e.key === 'Escape') lightbox.classList.remove('active');
   });
 </script>
 
