@@ -51,7 +51,7 @@
     .lead { color:#1f2937; opacity:.8; margin:0 0 12px; }
     /* Teams grid styled like pamphlet blocks */
     .grid { display:grid; gap: 14px; }
-    .card { background: rgba(255,255,255,.9); border-radius: var(--radius); padding: 16px; box-shadow: var(--shadow); display:grid; grid-template-columns: 140px 1fr; gap: 16px; align-items:center; }
+    .card { background: rgba(255,255,255,.9); border-radius: var(--radius); padding: 16px; box-shadow: var(--shadow); display:grid; grid-template-columns: 130px 1fr; gap: 15px; align-items:center; }
     .thumb { width:120px; height:120px; border-radius: 12px; overflow:hidden; background:#eef2ff; box-shadow: 0 3px 10px rgba(0,0,0,.08); }
     .thumb img {
   width: 100%;
@@ -88,40 +88,34 @@
 
 
 /* 라이트박스: 핀치줌/드래그 대응 */
+/* 단순 클릭 확대용 라이트박스 */
 #lightbox {
   position: fixed;
   inset: 0;
   display: none;
   align-items: center;
   justify-content: center;
-  background: rgba(0,0,0,.75);
+  background: rgba(0, 0, 0, 0.75);
   z-index: 999;
-  touch-action: none;              /* 제스처는 내부 JS가 처리 */
 }
 
-#lightbox.active { display: flex; }
-
-#lightbox .zoom-wrap {
-  position: relative;
-  overflow: hidden;                /* 확대 시 넘치는 영역 숨김 */
-  max-width: 90vw;
-  max-height: 90vh;
+#lightbox.active {
+  display: flex;
+  animation: fadeIn 0.3s ease-out;
 }
 
 #lightbox img {
-  display: block;
-  user-select: none;
-  -webkit-user-drag: none;
-  transform-origin: center center;
-  will-change: transform;
-  cursor: grab;
-  /* 초기 크기: 화면 안에 딱 맞게 */
-  max-width: 90vw;
-  max-height: 90vh;
+  max-width: 90%;
+  max-height: 90%;
+  border-radius: 12px;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.4);
+  cursor: pointer;
 }
 
-/* 확대 중 드래그 시 손잡이 커서 */
-#lightbox img.dragging { cursor: grabbing; }
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
 
 @keyframes fadeIn {
   from { opacity: 0; } to { opacity: 1; }
@@ -352,118 +346,34 @@
  
 <!-- 확대 이미지 모달 -->
 <div id="lightbox">
-  <div class="zoom-wrap">
-    <img src="" alt="">
-  </div>
+  <img src="" alt="">
 </div>
 
  <script>
-  // 라이트박스 열기: 팀 이미지와 공연순서 이미지 모두 대상
+  // 이미지 클릭 시 확대 보기 (모든 팀 이미지 + 공연 순서 이미지)
   document.querySelectorAll('.thumb img, .clickable-img').forEach(img => {
-    img.addEventListener('click', () => openLightbox(img.src, img.alt));
+    img.addEventListener('click', () => {
+      const lightbox = document.getElementById('lightbox');
+      const modalImg = lightbox.querySelector('img');
+      modalImg.src = img.src;
+      modalImg.alt = img.alt;
+      lightbox.classList.add('active');
+    });
   });
 
-  const lightbox = document.getElementById('lightbox');
-  const zoomWrap = lightbox.querySelector('.zoom-wrap');
-  const modalImg = lightbox.querySelector('img');
-
-  function openLightbox(src, alt) {
-    modalImg.src = src;
-    modalImg.alt = alt || '';
-    resetTransform();
-    lightbox.classList.add('active');
-  }
-
-  // 배경을 탭/클릭하면 닫기 (이미지 누르면 닫히지 않음)
-  lightbox.addEventListener('click', (e) => {
-    if (e.target === lightbox) lightbox.classList.remove('active');
-  });
-
-  /* ===== 핀치줌 & 드래그 ===== */
-  let scale = 1, lastScale = 1;
-  let startDist = 0;
-
-  let posX = 0, posY = 0;        // 현재 이동 위치
-  let lastX = 0, lastY = 0;      // 마지막 커밋된 이동 위치
-  let startX = 0, startY = 0;    // 드래그 시작 좌표
-  let dragging = false;
-
-  function resetTransform() {
-    scale = lastScale = 1;
-    posX = lastX = 0;
-    posY = lastY = 0;
-    modalImg.style.transform = 'translate3d(0,0,0) scale(1)';
-    modalImg.classList.remove('dragging');
-  }
-
-  function setTransform() {
-    modalImg.style.transform = `translate3d(${posX}px, ${posY}px, 0) scale(${scale})`;
-  }
-
-  // 두 점 사이 거리
-  function distance(t1, t2) {
-    const dx = t2.clientX - t1.clientX;
-    const dy = t2.clientY - t1.clientY;
-    return Math.hypot(dx, dy);
-  }
-
-  // 터치 시작
-  zoomWrap.addEventListener('touchstart', (e) => {
-    if (e.touches.length === 2) {
-      // 핀치 시작
-      startDist = distance(e.touches[0], e.touches[1]);
-      lastScale = scale;
-    } else if (e.touches.length === 1) {
-      // 드래그 시작
-      dragging = true;
-      modalImg.classList.add('dragging');
-      startX = e.touches[0].clientX - lastX;
-      startY = e.touches[0].clientY - lastY;
-    }
-  }, { passive: true });
-
-  // 터치 이동
-  zoomWrap.addEventListener('touchmove', (e) => {
-    if (e.touches.length === 2) {
-      // 핀치 확대/축소
-      const dist = distance(e.touches[0], e.touches[1]);
-      const rawScale = (dist / startDist) * lastScale;
-      scale = Math.max(1, Math.min(rawScale, 4)); // 1~4배 제한
-      setTransform();
-    } else if (e.touches.length === 1 && dragging && scale > 1) {
-      // 확대 상태에서 드래그 이동
-      lastX = e.touches[0].clientX - startX;
-      lastY = e.touches[0].clientY - startY;
-      posX = lastX;
-      posY = lastY;
-      setTransform();
-    }
-  }, { passive: true });
-
-  // 터치 종료
-  zoomWrap.addEventListener('touchend', (e) => {
-    if (e.touches.length === 0) {
-      dragging = false;
-      modalImg.classList.remove('dragging');
-      // 스케일이 1보다 작아졌다면 복구
-      if (scale < 1) { scale = 1; setTransform(); }
-    } else if (e.touches.length === 1) {
-      // 핀치에서 한 손가락 남은 경우 드래그로 전환 준비
-      startX = e.touches[0].clientX - lastX;
-      startY = e.touches[0].clientY - lastY;
-      dragging = true;
-      modalImg.classList.add('dragging');
+  // 모달 클릭 시 닫기
+  document.getElementById('lightbox').addEventListener('click', (e) => {
+    if (e.target.id === 'lightbox') {
+      e.currentTarget.classList.remove('active');
     }
   });
 
-  // 데스크톱 휠 확대 (보너스)
-  zoomWrap.addEventListener('wheel', (e) => {
-    e.preventDefault();
-    const delta = Math.sign(e.deltaY);
-    const step = 0.15;
-    scale = Math.max(1, Math.min(scale - delta * step, 4));
-    setTransform();
-  }, { passive: false });
+  // ESC 키로 닫기 (선택)
+  window.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+      document.getElementById('lightbox').classList.remove('active');
+    }
+  });
 </script>
 
 </body>
