@@ -30,18 +30,23 @@
     img { max-width: 100%; display:block; height:auto; }
     a { color: #0ea5e9; text-decoration: none; }
     .container { max-width: 960px; margin: 0 auto; padding: 16px; }
-    header.site-header { position: sticky; top: 0; z-index: 20; backdrop-filter: blur(8px); background: rgba(255,255,255,.6); border-bottom: 1px solid rgba(0,0,0,.06);}
-    .hero {
+    header.site-header {
+  position: static;              /* 고정 해제 */
+  background: transparent;
+  border: 0;
+}
+
+.hero {
   display: grid;
   gap: 10px;
   align-items: center;
-  justify-items: center; /* 가로 가운데 정렬 */
-  text-align: center;    /* 텍스트 중앙 정렬 */
-  padding: 12px 0;
+  justify-items: center;         /* 가로 중앙 */
+  text-align: center;            /* 텍스트 중앙 */
+  padding: 20px 0 12px;
 }
 
-    .title-ko { font-family: 'Jua', system-ui, -apple-system, sans-serif; font-size: 32px; margin:0; letter-spacing: .5px; }
-    .title-en { font-style: italic; font-weight:700; color: var(--accent); margin-top:-4px; }
+.title-ko { font-family: 'Jua', sans-serif; font-size: 32px; margin:0; }
+.title-en { font-style: italic; font-weight:700; color:#2e9c4a; margin-top:-2px; }
     .meta { display:flex; flex-wrap:wrap; gap: 8px; font-weight:700; }
     .pill { background:#fff; padding:6px 12px; border-radius:999px; border:1px solid rgba(0,0,0,.08); box-shadow: var(--shadow); font-size:14px; }
     .hero-poster { border-radius: 20px; overflow:hidden; box-shadow: var(--shadow); }
