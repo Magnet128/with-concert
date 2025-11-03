@@ -51,30 +51,47 @@
     .lead { color:#1f2937; opacity:.8; margin:0 0 12px; }
     /* Teams grid styled like pamphlet blocks */
     .grid { display:grid; gap: 14px; }
-    .card { background: rgba(255,255,255,.9); border-radius: var(--radius); padding: 16px; box-shadow: var(--shadow); display:grid; grid-template-columns: 130px 1fr; gap: 15px; align-items:center; }
-    .thumb { width:120px; height:120px; border-radius: 12px; overflow:hidden; background:#eef2ff; box-shadow: 0 3px 10px rgba(0,0,0,.08); }
-    .thumb img {
-  width: 100%;
-  height: 100%;
-  object-fit: contain;     /* 원본 비율 유지 */
-  background: #fff;        /* 비율 차이로 생긴 여백 부분은 흰색 배경 */
-  border-radius: 12px;
+    .card {
+  display: flex;
+  flex-direction: column;   /* 세로 배치 */
+  align-items: center;      /* 중앙 정렬 */
+  text-align: center;
+  background: rgba(255,255,255,0.9);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 20px 16px;
+  gap: 10px;
 }
 
-    .avatar { width:100%; height:100%; display:flex; align-items:center; justify-content:center; font-weight:700; font-size: 22px; color:#1e293b; background: linear-gradient(135deg,#ffdfa1,#a8d5ff); }
-    .name {
+.name {
   font-family: 'Jua', sans-serif;
-  font-size: 19px;
+  font-size: 20px;
   margin: 0 0 6px;
   color: #111827;
+}
+
+.thumb {
+  width: 180px;             /* 필요 시 160~200px로 조절 */
+  height: 180px;
+  border-radius: 14px;
+  overflow: hidden;
+  background: #ffffff;
+  box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+}
+
+.thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;       /* ✅ 원본 비율 살림 (여백은 흰색) */
+  background: #fff;
 }
 
 .members {
   font-family: 'Gowun Dodum', sans-serif;
   font-size: 15px;
   font-weight: 600;
-  color: #16a34a;   /* 연한 녹색으로 포인트 */
-  margin: 0 0 8px;  /* 소개문구와 여백 */
+  color: #16a34a;
+  margin: 4px 0 2px;
 }
 
 .desc {
@@ -85,6 +102,7 @@
   word-break: keep-all;
   margin: 0;
 }
+
 
 
 /* 라이트박스: 핀치줌/드래그 대응 */
@@ -213,100 +231,85 @@
       <div class="grid" id="teams">
   <!-- 1. 못해솔로지만 아카펠라는 하고싶어 -->
   <article class="card">
+    <h3 class="name">못해솔로지만 아카펠라는 하고싶어</h3>
     <div class="thumb">
-      <img src="1.png" alt="못해솔로지만 아카펠라는 하고싶어">
+      <img src="1.jpg" alt="못해솔로지만 아카펠라는 하고싶어 팀 사진">
     </div>
-    <div>
-      <h3 class="name">못해솔로지만 아카펠라는 하고싶어</h3>
-      <p class="members">나예원 · 정유경 · 노승래<br>홍승수 · 김주병</p>
-      <p class="desc">솔로곡보다는 화음을 만들고 싶은 못해솔로들의 아카펠라 도전기!!</p>
-    </div>
+    <p class="members">나예원 · 정유경 · 노승래 · 홍승수 · 김주병</p>
+    <p class="desc">솔로곡보다는 화음을 만들고 싶은 못해솔로들의 아카펠라 도전기!!</p>
   </article>
 
   <!-- 2. 테토남녀 -->
   <article class="card">
+    <h3 class="name">테토남녀</h3>
     <div class="thumb">
-      <img src="2.png" alt="테토남녀">
+      <img src="2.jpg" alt="테토남녀 팀 사진">
     </div>
-    <div>
-      <h3 class="name">테토남녀</h3>
-      <p class="members">김희린 · 서혜연 · 김지은<br>윤연상 · 이용호 · 신재성</p>
-      <p class="desc">테너 셋, 알토 셋 남녀가 모였다! <br>오전 2:08 2025-11-04낯선 곳에서도 둥글게 살고 싶은 테토들의 이야기.</p>
-    </div>
+    <p class="members">김희린 · 서혜연 · 김지은 · 윤연상 · 이용호 · 신재성</p>
+    <p class="desc">테너 셋, 알토 셋 남녀가 모였다! 낯선 곳에서도 둥글게 살고 싶은 테토들의 이야기.</p>
   </article>
 
   <!-- 3. 목마른 사슴들 -->
   <article class="card">
+    <h3 class="name">목마른 사슴들</h3>
     <div class="thumb">
-      <img src="3.png" alt="목마른 사슴들">
+      <img src="3.jpg" alt="목마른 사슴들 팀 사진">
     </div>
-    <div>
-      <h3 class="name">목마른 사슴들</h3>
-      <p class="members">고하영 · 김미영 · 손윤호<br>민명식 · 김민준</p>
-      <p class="desc">3년째 목이 마른 사슴들… <br>그들의 갈증은 언제쯤 해소될런지.</p>
-    </div>
+    <p class="members">고하영 · 김미영 · 손윤호 · 민명식 · 김민준</p>
+    <p class="desc">3년째 목이 마른 사슴들… 그들의 갈증은 언제쯤 해소될런지.</p>
   </article>
 
   <!-- 4. 사호보이즈 -->
   <article class="card">
+    <h3 class="name">사호보이즈</h3>
     <div class="thumb">
-      <img src="4.png" alt="사호보이즈">
+      <img src="4.jpg" alt="사호보이즈 팀 사진">
     </div>
-    <div>
-      <h3 class="name">사호보이즈</h3>
-      <p class="members">김경성 · 추진호 · 이선호<br>이용호 · 김부호</p>
-      <p class="desc">당신의 혼을 빼앗을 4명의 ‘호’,<br>그리고 한 명의 사자</p>
-    </div>
+    <p class="members">김경성 · 추진호 · 이선호 · 이용호 · 김부호</p>
+    <p class="desc">당신의 혼을 빼앗을 4명의 ‘호’, 그리고 한 명의 사자.</p>
   </article>
 
   <!-- 5. 96.33 -->
   <article class="card">
+    <h3 class="name">96.33</h3>
     <div class="thumb">
-      <img src="5.png" alt="96.33">
+      <img src="5.jpg" alt="96.33 팀 사진">
     </div>
-    <div>
-      <h3 class="name">96.33</h3>
-      <p class="members">이영서 · 강아름 · 김지은<br>장원석 · 박양선 · 이준영</p>
-      <p class="desc">서툰 청춘이여, 하모니로 진화하라!<br> 완벽하지 않아도 괜찮아,<br> 우리는 지금 진화 중이니까!<br> 96.33 진화!!!</p>
-    </div>
+    <p class="members">이영서 · 강아름 · 김지은 · 장원석 · 박양선 · 이준영</p>
+    <p class="desc">서툰 청춘이여, 하모니로 진화하라! 완벽하지 않아도 괜찮아, 우리는 지금 진화 중이니까! 96.33 진화!!!</p>
   </article>
 
   <!-- 6. 피치톤드 -->
   <article class="card">
+    <h3 class="name">피치톤드</h3>
     <div class="thumb">
-      <img src="6.png" alt="피치톤드">
+      <img src="6.jpg" alt="피치톤드 팀 사진">
     </div>
-    <div>
-      <h3 class="name">피치톤드</h3>
-      <p class="members">연민 · 김미영 · 석동현<br>이성룡 · 김부호</p>
-      <p class="desc">피치가 완벽한 상쾌한 목소리의 조합!<br>환상적인 화음과 피치톤드의 상쾌함에 눈코입 뻥 뚫릴 준비가 되셨나요?<br>Here we go 🎵</p>
-    </div>
+    <p class="members">연민 · 김미영 · 석동현 · 이성룡 · 김부호</p>
+    <p class="desc">피치가 완벽한 상쾌한 목소리의 조합! 환상적인 화음과 피치톤드의 상쾌함에 눈코입 뻥 뚫릴 준비가 되셨나요? Here we go 🎵</p>
   </article>
 
   <!-- 7. 주민번호 486 -->
   <article class="card">
+    <h3 class="name">주민번호 486</h3>
     <div class="thumb">
-      <img src="7.jpg" alt="주민번호 486">
+      <img src="7.jpg" alt="주민번호 486 팀 사진">
     </div>
-    <div>
-      <h3 class="name">주민번호 486</h3>
-      <p class="members">문예은 · 김지슬 · 박상현<br>이준영 · 김민준</p>
-      <p class="desc">아카펠라를 사랑하는 04~86.<br> 하루에 4번 나이를 말하고, <br>8번 웃고, 6번의 조용을 해줘~<br> 날 열어주는 단 하나뿐인 주민번호야~</p>
-    </div>
+    <p class="members">문예은 · 김지슬 · 박상현 · 이준영 · 김민준</p>
+    <p class="desc">아카펠라를 사랑하는 04~86. 하루에 4번 나이를 말하고, 8번 웃고, 6번의 조용을 해줘~ 날 열어주는 단 하나뿐인 주민번호야~</p>
   </article>
 
   <!-- 8. 스테인리스 -->
   <article class="card">
+    <h3 class="name">스테인리스</h3>
     <div class="thumb">
-      <img src="8.png" alt="스테인리스">
+      <img src="8.jpg" alt="스테인리스 팀 사진">
     </div>
-    <div>
-      <h3 class="name">스테인리스</h3>
-      <p class="members">이영서 · 연민 · 신재성<br>손윤호 · 민명식 · 윤연상</p>
-      <p class="desc">끝까지 녹슬지 않는 열정!</p>
-    </div>
+    <p class="members">이영서 · 연민 · 신재성 · 손윤호 · 민명식 · 윤연상</p>
+    <p class="desc">끝까지 녹슬지 않는 열정!</p>
   </article>
 </div>
+
     </section>
 <!-- 한예극장 오시는 길 -->
 <section class="section" aria-labelledby="location-title">
