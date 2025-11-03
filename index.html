@@ -1,0 +1,470 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#ffeccf">
+  <title>아카펠라 막:창 세번째 콘서트 WITH</title>
+  <!-- Pamphlet-like fonts (loaded online when available) -->
+  <link href="https://fonts.googleapis.com/css2?family=Jua&family=Gowun+Dodum&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg1: #fff3d8;
+      --bg2: #e6f6ff;
+      --bg3: #f4e7ff;
+      --paper: #ffffff;
+      --ink: #0f172a;
+      --muted: #334155;
+      --accent: #2e9c4a; /* green like subtitle */
+      --accent2: #5b6ceb; /* bluish like title shadow */
+      --radius: 18px;
+      --shadow: 0 8px 24px rgba(0,0,0,.08);
+    }
+    * { box-sizing: border-box; }
+    html,body { margin:0; padding:0; background: radial-gradient(1200px 800px at 10% 10%, var(--bg1), transparent 60%),
+                                     radial-gradient(1200px 800px at 90% 30%, var(--bg2), transparent 60%),
+                                     radial-gradient(1000px 700px at 30% 90%, var(--bg3), transparent 60%),
+                                     #fbfbfb;
+                 color: var(--ink);
+                 font-family: 'Gowun Dodum', ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, 'Noto Sans KR', Apple SD Gothic Neo, 'Malgun Gothic', sans-serif; }
+    img { max-width: 100%; display:block; height:auto; }
+    a { color: #0ea5e9; text-decoration: none; }
+    .container { max-width: 960px; margin: 0 auto; padding: 16px; }
+    header.site-header { position: sticky; top: 0; z-index: 20; backdrop-filter: blur(8px); background: rgba(255,255,255,.6); border-bottom: 1px solid rgba(0,0,0,.06);}
+    .hero {
+  display: grid;
+  gap: 10px;
+  align-items: center;
+  justify-items: center; /* 가로 가운데 정렬 */
+  text-align: center;    /* 텍스트 중앙 정렬 */
+  padding: 12px 0;
+}
+
+    .title-ko { font-family: 'Jua', system-ui, -apple-system, sans-serif; font-size: 32px; margin:0; letter-spacing: .5px; }
+    .title-en { font-style: italic; font-weight:700; color: var(--accent); margin-top:-4px; }
+    .meta { display:flex; flex-wrap:wrap; gap: 8px; font-weight:700; }
+    .pill { background:#fff; padding:6px 12px; border-radius:999px; border:1px solid rgba(0,0,0,.08); box-shadow: var(--shadow); font-size:14px; }
+    .hero-poster { border-radius: 20px; overflow:hidden; box-shadow: var(--shadow); }
+.clickable-img { border-radius: 20px; overflow:hidden; box-shadow: var(--shadow); }
+    .section { margin-top: 50px; }
+    .section h2 { font-family: 'Jua', system-ui; font-size: 24px; margin: 0 0 8px; }
+    .lead { color:#1f2937; opacity:.8; margin:0 0 12px; }
+    /* Teams grid styled like pamphlet blocks */
+    .grid { display:grid; gap: 14px; }
+    .card { background: rgba(255,255,255,.9); border-radius: var(--radius); padding: 16px; box-shadow: var(--shadow); display:grid; grid-template-columns: 140px 1fr; gap: 16px; align-items:center; }
+    .thumb { width:120px; height:120px; border-radius: 12px; overflow:hidden; background:#eef2ff; box-shadow: 0 3px 10px rgba(0,0,0,.08); }
+    .thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;     /* 원본 비율 유지 */
+  background: #fff;        /* 비율 차이로 생긴 여백 부분은 흰색 배경 */
+  border-radius: 12px;
+}
+
+    .avatar { width:100%; height:100%; display:flex; align-items:center; justify-content:center; font-weight:700; font-size: 22px; color:#1e293b; background: linear-gradient(135deg,#ffdfa1,#a8d5ff); }
+    .name {
+  font-family: 'Jua', sans-serif;
+  font-size: 19px;
+  margin: 0 0 6px;
+  color: #111827;
+}
+
+.members {
+  font-family: 'Gowun Dodum', sans-serif;
+  font-size: 15px;
+  font-weight: 600;
+  color: #16a34a;   /* 연한 녹색으로 포인트 */
+  margin: 0 0 8px;  /* 소개문구와 여백 */
+}
+
+.desc {
+  font-family: 'Gowun Dodum', sans-serif;
+  font-size: 15.5px;
+  color: #374151;
+  line-height: 1.7;
+  word-break: keep-all;
+  margin: 0;
+}
+
+
+/* 라이트박스: 핀치줌/드래그 대응 */
+#lightbox {
+  position: fixed;
+  inset: 0;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0,0,0,.75);
+  z-index: 999;
+  touch-action: none;              /* 제스처는 내부 JS가 처리 */
+}
+
+#lightbox.active { display: flex; }
+
+#lightbox .zoom-wrap {
+  position: relative;
+  overflow: hidden;                /* 확대 시 넘치는 영역 숨김 */
+  max-width: 90vw;
+  max-height: 90vh;
+}
+
+#lightbox img {
+  display: block;
+  user-select: none;
+  -webkit-user-drag: none;
+  transform-origin: center center;
+  will-change: transform;
+  cursor: grab;
+  /* 초기 크기: 화면 안에 딱 맞게 */
+  max-width: 90vw;
+  max-height: 90vh;
+}
+
+/* 확대 중 드래그 시 손잡이 커서 */
+#lightbox img.dragging { cursor: grabbing; }
+
+@keyframes fadeIn {
+  from { opacity: 0; } to { opacity: 1; }
+}
+
+
+    .note-bg { position: relative; }
+    .note-bg::after {
+      content: "";
+      position: absolute; inset: -40px -16px -40px -16px; z-index:-1;
+      background-image: url('data:image/svg+xml;utf8,      <svg xmlns="http://www.w3.org/2000/svg" width="600" height="400" viewBox="0 0 600 400">        <g fill="%2396a7cf" fill-opacity="0.18">          <circle cx="60" cy="60" r="8"/>          <circle cx="540" cy="120" r="10"/>          <path d="M100 200 q40 -50 80 0 t80 0" stroke="%2396a7cf" stroke-opacity="0.15" stroke-width="6" fill="none"/>          <path d="M450 260 q40 -50 80 0" stroke="%2396a7cf" stroke-opacity="0.15" stroke-width="6" fill="none"/>          <circle cx="200" cy="320" r="6"/>        </g>      </svg>');
+      background-repeat: no-repeat;
+      background-position: right bottom;
+      background-size: 600px auto;
+      pointer-events:none;
+    }
+    footer { color:#475569; font-size:12px; text-align:center; padding: 28px 0 40px; }
+    /* Responsive */
+    @media (min-width: 640px) {
+      .title-ko { font-size: 40px; }
+      .grid { grid-template-columns: repeat(2, 1fr); }
+      .card { grid-template-columns: 120px 1fr; }
+      .thumb { width:120px; height:120px; }
+    }
+    @media (min-width: 960px) {
+      .grid { grid-template-columns: repeat(3, 1fr); }
+    }
+
+.theater-box {
+  background: rgba(255,255,255,0.9);
+  border-radius: 16px;
+  box-shadow: var(--shadow);
+  padding: 20px 16px;
+  line-height: 1.7;
+  margin-top: 12px;
+}
+
+.theater-box h3 {
+  font-family: 'Jua', sans-serif;
+  font-size: 17px;
+  margin: 16px 0 6px;
+  color: #1e3a8a;
+}
+
+.theater-box p {
+  margin: 0 0 8px;
+  color: #334155;
+}
+
+.theater-box ul {
+  margin: 0 0 8px 16px;
+  padding: 0;
+  color: #334155;
+}
+
+.map-link {
+  display: inline-block;
+  margin-top: 6px;
+  color: #16a34a;
+  font-weight: 600;
+  text-decoration: none;
+  transition: color .2s;
+}
+
+.map-link:hover {
+  color: #15803d;
+  text-decoration: underline;
+}
+
+  </style>
+</head>
+<body>
+  <header class="site-header">
+    <div class="container hero">
+      <h1 class="title-ko">아카펠라 막:창 세번째 콘서트</h1>
+      <div class="title-en">WITH · We&apos;re In The Harmony</div>
+      <div class="meta">
+        <span class="pill">📅 2025.11.29(토) 17:00</span>
+        <span class="pill">📍 한예극장 2관</span>
+      </div>
+    </div>
+  </header>
+
+  <main class="container note-bg">
+    <section class="section" aria-labelledby="poster-title">      
+      <img class="hero-poster" src="poster.jpg" alt="WITH 콘서트 포스터"><br>
+      <img class="clickable-img" src="order.jpg" alt="WITH 공연순서">
+    </section>
+
+    <section class="section" aria-labelledby="teams-title">
+      <h2 id="teams-title">공연팀 소개</h2>
+      <p class="lead">  
+  <strong style="color:#2e9c4a;">※ 사진을 누르시면 크게 보입니다.</strong>
+</p>
+      <div class="grid" id="teams">
+  <!-- 1. 못해솔로지만 아카펠라는 하고싶어 -->
+  <article class="card">
+    <div class="thumb">
+      <img src="1.png" alt="못해솔로지만 아카펠라는 하고싶어">
+    </div>
+    <div>
+      <h3 class="name">못해솔로지만 아카펠라는 하고싶어</h3>
+      <p class="members">나예원 · 정유경 · 노승래<br>홍승수 · 김주병</p>
+      <p class="desc">솔로곡보다는 화음을 만들고 싶은 못해솔로들의 아카펠라 도전기!!</p>
+    </div>
+  </article>
+
+  <!-- 2. 테토남녀 -->
+  <article class="card">
+    <div class="thumb">
+      <img src="2.png" alt="테토남녀">
+    </div>
+    <div>
+      <h3 class="name">테토남녀</h3>
+      <p class="members">김희린 · 서혜연 · 김지은<br>윤연상 · 이용호 · 신재성</p>
+      <p class="desc">테너 셋, 알토 셋 남녀가 모였다! <br>오전 2:08 2025-11-04낯선 곳에서도 둥글게 살고 싶은 테토들의 이야기.</p>
+    </div>
+  </article>
+
+  <!-- 3. 목마른 사슴들 -->
+  <article class="card">
+    <div class="thumb">
+      <img src="3.png" alt="목마른 사슴들">
+    </div>
+    <div>
+      <h3 class="name">목마른 사슴들</h3>
+      <p class="members">고하영 · 김미영 · 손윤호<br>민명식 · 김민준</p>
+      <p class="desc">3년째 목이 마른 사슴들… <br>그들의 갈증은 언제쯤 해소될런지.</p>
+    </div>
+  </article>
+
+  <!-- 4. 사호보이즈 -->
+  <article class="card">
+    <div class="thumb">
+      <img src="4.png" alt="사호보이즈">
+    </div>
+    <div>
+      <h3 class="name">사호보이즈</h3>
+      <p class="members">김경성 · 추진호 · 이선호<br>이용호 · 김부호</p>
+      <p class="desc">당신의 혼을 빼앗을 4명의 ‘호’,<br>그리고 한 명의 사자</p>
+    </div>
+  </article>
+
+  <!-- 5. 96.33 -->
+  <article class="card">
+    <div class="thumb">
+      <img src="5.png" alt="96.33">
+    </div>
+    <div>
+      <h3 class="name">96.33</h3>
+      <p class="members">이영서 · 강아름 · 김지은<br>장원석 · 박양선 · 이준영</p>
+      <p class="desc">서툰 청춘이여, 하모니로 진화하라!<br> 완벽하지 않아도 괜찮아,<br> 우리는 지금 진화 중이니까!<br> 96.33 진화!!!</p>
+    </div>
+  </article>
+
+  <!-- 6. 피치톤드 -->
+  <article class="card">
+    <div class="thumb">
+      <img src="6.png" alt="피치톤드">
+    </div>
+    <div>
+      <h3 class="name">피치톤드</h3>
+      <p class="members">연민 · 김미영 · 석동현<br>이성룡 · 김부호</p>
+      <p class="desc">피치가 완벽한 상쾌한 목소리의 조합!<br>환상적인 화음과 피치톤드의 상쾌함에 눈코입 뻥 뚫릴 준비가 되셨나요?<br>Here we go 🎵</p>
+    </div>
+  </article>
+
+  <!-- 7. 주민번호 486 -->
+  <article class="card">
+    <div class="thumb">
+      <img src="7.jpg" alt="주민번호 486">
+    </div>
+    <div>
+      <h3 class="name">주민번호 486</h3>
+      <p class="members">문예은 · 김지슬 · 박상현<br>이준영 · 김민준</p>
+      <p class="desc">아카펠라를 사랑하는 04~86.<br> 하루에 4번 나이를 말하고, <br>8번 웃고, 6번의 조용을 해줘~<br> 날 열어주는 단 하나뿐인 주민번호야~</p>
+    </div>
+  </article>
+
+  <!-- 8. 스테인리스 -->
+  <article class="card">
+    <div class="thumb">
+      <img src="8.png" alt="스테인리스">
+    </div>
+    <div>
+      <h3 class="name">스테인리스</h3>
+      <p class="members">이영서 · 연민 · 신재성<br>손윤호 · 민명식 · 윤연상</p>
+      <p class="desc">끝까지 녹슬지 않는 열정!</p>
+    </div>
+  </article>
+</div>
+    </section>
+<!-- 한예극장 오시는 길 -->
+<section class="section" aria-labelledby="location-title">
+  <h2 id="location-title">🎭 한예극장 오시는 길</h2>
+  <div class="theater-box">
+    <p class="lead">
+      공연이 열리는 <strong>한예극장 2관</strong>의 위치 및 교통 정보를 안내드립니다.<br>
+      <a class="map-link" href="https://naver.me/GQ1QRdv3" target="_blank">📍 네이버 지도에서 보기</a>
+    </p>
+
+    <div class="transport">
+      <h3>주소</h3>
+      <p>서울특별시 종로구 이화장길 66 (동숭동)</p>
+
+      <h3>대중교통</h3>
+      <ul>
+        <li><strong>지하철:</strong> 4호선 혜화역 2번 출구 이용</li>
+        <li><strong>도보:</strong> 혜화역 2번 출구에서 방송통신대학 후문 방향으로 약 500m 직진</li>
+      </ul>
+
+      <h3>자가용</h3>
+      <ul>
+        <li><strong>주소:</strong> 서울특별시 종로구 이화장길 66</li>
+        <li><strong>주차:</strong> 주차장이 없으므로 인근 유료 주차장을 이용해 주세요.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+
+  </main>
+
+  <footer>
+    © 2025 아카펠라 막:창
+  </footer>
+
+ 
+<!-- 확대 이미지 모달 -->
+<div id="lightbox">
+  <div class="zoom-wrap">
+    <img src="" alt="">
+  </div>
+</div>
+
+ <script>
+  // 라이트박스 열기: 팀 이미지와 공연순서 이미지 모두 대상
+  document.querySelectorAll('.thumb img, .clickable-img').forEach(img => {
+    img.addEventListener('click', () => openLightbox(img.src, img.alt));
+  });
+
+  const lightbox = document.getElementById('lightbox');
+  const zoomWrap = lightbox.querySelector('.zoom-wrap');
+  const modalImg = lightbox.querySelector('img');
+
+  function openLightbox(src, alt) {
+    modalImg.src = src;
+    modalImg.alt = alt || '';
+    resetTransform();
+    lightbox.classList.add('active');
+  }
+
+  // 배경을 탭/클릭하면 닫기 (이미지 누르면 닫히지 않음)
+  lightbox.addEventListener('click', (e) => {
+    if (e.target === lightbox) lightbox.classList.remove('active');
+  });
+
+  /* ===== 핀치줌 & 드래그 ===== */
+  let scale = 1, lastScale = 1;
+  let startDist = 0;
+
+  let posX = 0, posY = 0;        // 현재 이동 위치
+  let lastX = 0, lastY = 0;      // 마지막 커밋된 이동 위치
+  let startX = 0, startY = 0;    // 드래그 시작 좌표
+  let dragging = false;
+
+  function resetTransform() {
+    scale = lastScale = 1;
+    posX = lastX = 0;
+    posY = lastY = 0;
+    modalImg.style.transform = 'translate3d(0,0,0) scale(1)';
+    modalImg.classList.remove('dragging');
+  }
+
+  function setTransform() {
+    modalImg.style.transform = `translate3d(${posX}px, ${posY}px, 0) scale(${scale})`;
+  }
+
+  // 두 점 사이 거리
+  function distance(t1, t2) {
+    const dx = t2.clientX - t1.clientX;
+    const dy = t2.clientY - t1.clientY;
+    return Math.hypot(dx, dy);
+  }
+
+  // 터치 시작
+  zoomWrap.addEventListener('touchstart', (e) => {
+    if (e.touches.length === 2) {
+      // 핀치 시작
+      startDist = distance(e.touches[0], e.touches[1]);
+      lastScale = scale;
+    } else if (e.touches.length === 1) {
+      // 드래그 시작
+      dragging = true;
+      modalImg.classList.add('dragging');
+      startX = e.touches[0].clientX - lastX;
+      startY = e.touches[0].clientY - lastY;
+    }
+  }, { passive: true });
+
+  // 터치 이동
+  zoomWrap.addEventListener('touchmove', (e) => {
+    if (e.touches.length === 2) {
+      // 핀치 확대/축소
+      const dist = distance(e.touches[0], e.touches[1]);
+      const rawScale = (dist / startDist) * lastScale;
+      scale = Math.max(1, Math.min(rawScale, 4)); // 1~4배 제한
+      setTransform();
+    } else if (e.touches.length === 1 && dragging && scale > 1) {
+      // 확대 상태에서 드래그 이동
+      lastX = e.touches[0].clientX - startX;
+      lastY = e.touches[0].clientY - startY;
+      posX = lastX;
+      posY = lastY;
+      setTransform();
+    }
+  }, { passive: true });
+
+  // 터치 종료
+  zoomWrap.addEventListener('touchend', (e) => {
+    if (e.touches.length === 0) {
+      dragging = false;
+      modalImg.classList.remove('dragging');
+      // 스케일이 1보다 작아졌다면 복구
+      if (scale < 1) { scale = 1; setTransform(); }
+    } else if (e.touches.length === 1) {
+      // 핀치에서 한 손가락 남은 경우 드래그로 전환 준비
+      startX = e.touches[0].clientX - lastX;
+      startY = e.touches[0].clientY - lastY;
+      dragging = true;
+      modalImg.classList.add('dragging');
+    }
+  });
+
+  // 데스크톱 휠 확대 (보너스)
+  zoomWrap.addEventListener('wheel', (e) => {
+    e.preventDefault();
+    const delta = Math.sign(e.deltaY);
+    const step = 0.15;
+    scale = Math.max(1, Math.min(scale - delta * step, 4));
+    setTransform();
+  }, { passive: false });
+</script>
+
+</body>
+</html>
