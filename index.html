@@ -203,6 +203,13 @@
 .map-link:hover {
   text-decoration: underline;
 }
+.underline-warning {
+  text-decoration: underline;       /* 밑줄 표시 */
+  text-decoration-color: #dc2626;   /* 빨간색 계열 밑줄 */
+  text-underline-offset: 3px;       /* 밑줄과 글자 사이 여백 */
+  font-weight: 600;                 /* 강조 느낌 */
+  color: #b91c1c;                   /* 텍스트 색상도 약간 강조 */
+}
 
 
   </style>
@@ -337,7 +344,10 @@
       <h3>자가용</h3>
       <ul>
         <li><strong>주소:</strong> 서울특별시 종로구 이화장길 66</li>
-        <li><strong>주차:</strong> 주차장이 없으므로 인근 유료 주차장을 이용해 주세요.</li>
+        <li><strong>주차:</strong> 
+  <span class="underline-warning">주차장이 없으므로 인근 유료 주차장을 이용해 주세요.</span>
+</li>
+
       </ul>
     </div>
   </div>
