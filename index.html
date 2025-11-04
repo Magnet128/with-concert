@@ -85,8 +85,17 @@
   width: 100%;
   height: auto;
   object-fit: contain;
-  background: #fff;
-  border-radius: 12px;
+  transition: all 0.3s ease;
+}
+
+.thumb img.wide {
+  max-width: 260px;
+  max-height: 180px;
+}
+
+.thumb img.tall {
+  max-width: 180px;
+  max-height: 260px;
 }
 
 .members {
@@ -292,7 +301,7 @@
   <article class="card">
     <h3 class="name">피치톤드</h3>
     <div class="thumb">
-      <img src="6.png" alt="피치톤드 팀 사진">
+      <img src="6-1.png" alt="피치톤드 팀 사진">
     </div>
     <p class="members">연민 · 김미영 · 석동현<br>이성룡 · 김부호</p>
     <p class="desc">피치가 완벽한 상쾌한 목소리의 조합!<br>환상적인 화음과 피치톤드의 상쾌함에 눈코입 뻥 뚫릴 준비가 되셨나요?<br>Here we go 🎵</p>
@@ -365,6 +374,17 @@
 </div>
 
  <script>
+window.addEventListener('load', () => {
+    document.querySelectorAll('.thumb img').forEach(img => {
+      const ratio = img.naturalWidth / img.naturalHeight;
+      if (ratio > 1.2) {            // 가로가 긴 이미지
+        img.classList.add('wide');
+      } else if (ratio < 0.8) {     // 세로가 긴 이미지
+        img.classList.add('tall');
+      }
+    });
+  });
+   
   // 이미지 클릭 시 확대 보기 (팀 이미지 + 공연 순서 이미지)
   document.querySelectorAll('.thumb img, .clickable-img').forEach(img => {
     img.addEventListener('click', () => {
