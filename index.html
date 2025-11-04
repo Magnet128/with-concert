@@ -77,16 +77,29 @@
 
 .thumb {
   width: 100%;
-  max-width: 220px;
+  max-width: 220px;                 /* 기본 이미지 너비 */
   margin: 0 auto;
-  border-radius: 12px;
+  border-radius: 16px;               /* 외곽 둥글게 */
+  overflow: hidden;                  /* 둥근 모서리 안으로 이미지 클리핑 */
+  background: #fff;
+  border: 1px solid rgba(0,0,0,.06); /* 은은한 보더 */
+  box-shadow: 0 4px 14px rgba(0,0,0,.08);
+  transition: max-width .25s ease;
 }
 
+/* 이미지 자체는 비율 유지 + 전체 표시 */
 .thumb img {
+  display: block;
   width: 100%;
-  height: auto;
-  object-fit: contain;
-  transition: all 0.3s ease;
+  height: auto;                      /* 비율 유지 */
+  object-fit: contain;               /* 잘리지 않게 */
+  background: #fff;                  /* 여백 흰색 */
+  border-radius: 14px;               /* 내부도 살짝 둥글게 (선택) */
+}
+
+/* 가로로 긴 이미지를 더 크게 보여주기: 컨테이너 폭을 키움 */
+.thumb.is-wide {
+  max-width: 280px;                  /* 기본 220px → 와이드 280px */
 }
 
 .thumb img.wide {
@@ -375,16 +388,34 @@
 </div>
 
  <script>
-window.addEventListener('load', () => {
+// 팀 카드 이미지 비율 감지 → 부모 .thumb 에 클래스 부여
+  function markAspectClasses() {
     document.querySelectorAll('.thumb img').forEach(img => {
-      const ratio = img.naturalWidth / img.naturalHeight;
-      if (ratio > 1.2) {            // 가로가 긴 이미지
-        img.classList.add('wide');
-      } else if (ratio < 0.8) {     // 세로가 긴 이미지
-        img.classList.add('tall');
-      }
+      const parent = img.closest('.thumb');
+      if (!parent) return;
+
+      const apply = () => {
+        const w = img.naturalWidth;
+        const h = img.naturalHeight;
+        if (!w || !h) return;
+
+        parent.classList.remove('is-wide', 'is-tall');
+        const ratio = w / h;
+        if (ratio >= 1.25) {
+          parent.classList.add('is-wide');  // 가로로 긴 이미지
+        } else if (ratio <= 0.8) {
+          parent.classList.add('is-tall');  // 세로로 긴 이미지 (필요 시 활용)
+        }
+        // 중간 비율(0.8~1.25)은 기본 .thumb 사이즈 유지
+      };
+
+      if (img.complete) apply();
+      else img.addEventListener('load', apply, { once: true });
     });
-  });
+  }
+
+  // 첫 로드 + 이미지 교체(동적으로 바꾸는 경우) 대비
+  window.addEventListener('load', markAspectClasses);
    
   // 이미지 클릭 시 확대 보기 (팀 이미지 + 공연 순서 이미지)
   document.querySelectorAll('.thumb img, .clickable-img').forEach(img => {
